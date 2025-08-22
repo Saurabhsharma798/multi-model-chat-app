@@ -64,7 +64,7 @@ if user_query:
             st.error(response_data["error"])
     
         with st.chat_message("assistant"):
-            st.markdown(response_data)
+            st.markdown(reply)
         st.session_state['messages'].append({'role':"assistent","content":reply})
 
 
