@@ -2,6 +2,7 @@
 
 from pydantic import BaseModel
 from typing import List
+from fastapi.responses import JSONResponse
 
 class RequestModel(BaseModel):
     model_name:str
@@ -33,7 +34,7 @@ def chat_endpoint(request:RequestModel):
     system_prompt=request.system_prompt
 
     response=get_response(llm_id,provider,query,allow_search,system_prompt)
-    return response
+    return JSONResponse(content={"response":response})
 
 # step3 run app
 import uvicorn

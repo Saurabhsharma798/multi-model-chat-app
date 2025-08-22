@@ -27,8 +27,7 @@ elif provider=="GEMINI":
 
 allow_web_search=st.sidebar.checkbox("ALLOW WEB SEARCH")
 
-
-# user_query=st.text_area("enter your query",height=170,placeholder="ask your question")
+summary=st.sidebar.button("summary")
 
 
 if "messages" not in st.session_state:
@@ -60,9 +59,34 @@ if user_query:
     response=requests.post(API_URL,json=payload)
     if response.status_code==200:
         response_data=response.json()
+        reply=response_data['response']
         if "error" in response_data:
             st.error(response_data["error"])
     
         with st.chat_message("assistant"):
             st.markdown(response_data)
-        st.session_state['messages'].append({'role':"assistent","content":response_data})
+        st.session_state['messages'].append({'role':"assistent","content":reply})
+
+
+if summary:
+    message= [m['content']for m in st.session_state['messages']]
+    # print(message)
+    payload={
+        "model_name":selected_model,
+        "model_provider":provider,
+        "system_prompt":"give the summary of the conversation done here ",
+        "messages":message,
+        "allow_search":allow_web_search
+    }
+    print(message)
+    response=requests.post(API_URL,json=payload)
+    if response.status_code==200:
+        response_data=response.json()
+        reply=response_data['response']
+        if "error" in response_data:
+            st.error(response_data["error"])
+    
+        with st.chat_message("assistant"):
+            st.markdown(reply)
+        st.session_state['messages'].append({'role':"assistant","content":reply})
+
